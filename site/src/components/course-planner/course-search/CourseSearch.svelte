@@ -209,7 +209,7 @@ Copyright (C) 2026 Andrew Cupps
 		highlightedSuggestionIndex = -1;
 	}
 
-	export let courseSearchSelected: boolean = false;
+	// export let courseSearchSelected: boolean = false;
 
 	$: {
 		if (hoveredSection) {

@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { CurrentScheduleStore } from '../../stores/CoursePlannerStores';
-	import type { ScheduleSelection } from '../../types';
+	import type { ScheduleSelection, UserEvent } from '../../types';
 	import Tooltip from '../course-planner/schedule/Tooltip.svelte';
-	import { QuestionCircleOutline } from 'flowbite-svelte-icons';
 
 	const dispatch = createEventDispatcher();
 	let selections: ScheduleSelection[] = [];
-	let selectionsCustom: any[] = [];
+	let selectionsCustom: UserEvent[] = [];
 
 	CurrentScheduleStore.subscribe((stored) => {
 		selections = stored.selections.filter(
 			(s) => 'course' in s && 'section' in s
 		) as ScheduleSelection[];
-		selectionsCustom = stored.selections.filter((s) => !('course' in s)) as any[];
+		selectionsCustom = stored.selections.filter((s): s is UserEvent => !('course' in s));
 	});
 
 	function closePopup() {
@@ -77,7 +76,7 @@
 	}
 
 	function exportCalender() {
-		let icsData = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Jupiterp//EN\n';
+		let icsData = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Jupiterp//EN\r\n';
 		// hardcoded for now (dates are 0 indexed so jan is 0 and its yy, mm, dd)
 		const semesterStart = formatDate(new Date(2026, 7, 31));
 		const semesterEnd = formatDate(new Date(2026, 11, 11));
@@ -100,16 +99,16 @@
 
 			const actualFirstDay = getFirstOccurrence(semesterStart, days);
 
-			icsData += 'BEGIN:VEVENT\n';
-			icsData += `SUMMARY:${name} - ${location}\n`;
+			icsData += 'BEGIN:VEVENT\r\n';
+			icsData += `SUMMARY:${name} - ${location}\r\n`;
 
-			icsData += `DTSTART:${actualFirstDay}T${startTime}\n`;
-			icsData += `DTEND:${actualFirstDay}T${endTime}\n`;
-			icsData += `RRULE:FREQ=WEEKLY;BYDAY=${days};UNTIL=${semesterEnd}T235959Z\n`;
-			icsData += `LOCATION:${location}\n`;
-			icsData += `DESCRIPTION:${description}\n`;
-			icsData += `UID:${id}@jupiterp\n`;
-			icsData += 'END:VEVENT\n';
+			icsData += `DTSTART:${actualFirstDay}T${startTime}\r\n`;
+			icsData += `DTEND:${actualFirstDay}T${endTime}\r\n`;
+			icsData += `RRULE:FREQ=WEEKLY;BYDAY=${days};UNTIL=${semesterEnd}T235959Z\r\n`;
+			icsData += `LOCATION:${location}\r\n`;
+			icsData += `DESCRIPTION:${description}\r\n`;
+			icsData += `UID:${id}@jupiterp\r\n`;
+			icsData += 'END:VEVENT\r\n';
 		}
 
 		for (const currentClass of selections) {
@@ -169,35 +168,35 @@
 					if (locLower.includes('online') || locLower.includes('async')) {
 						const actualFirstDay = semesterStart;
 
-						icsData += 'BEGIN:VEVENT\n';
-						icsData += `SUMMARY:${courseCode} (${sectionNumber}) - ${packet.location}\n`;
+						icsData += 'BEGIN:VEVENT\r\n';
+						icsData += `SUMMARY:${courseCode} (${sectionNumber}) - ${packet.location}\r\n`;
 
-						icsData += `DTSTART:${actualFirstDay}T000000\n`;
-						icsData += `DTEND:${actualFirstDay}T235959\n`;
-						icsData += `LOCATION:${packet.location}\n`;
+						icsData += `DTSTART:${actualFirstDay}T000000\r\n`;
+						icsData += `DTEND:${actualFirstDay}T235959\r\n`;
+						icsData += `LOCATION:${packet.location}\r\n`;
 						const onlineNote = locLower.includes('sync')
 							? 'Online (Synchronous)'
 							: locLower.includes('async')
 								? 'Online (Asynchronous)'
 								: 'Online';
-						icsData += `DESCRIPTION:Course: ${courseName}\\nInstructors: ${instructorNames} (${onlineNote})\\n`;
-						icsData += `UID:${courseCode}-${sectionNumber}-online@jupiterp\n`;
-						icsData += 'END:VEVENT\n';
+						icsData += `DESCRIPTION:Course: ${courseName}\\nInstructors: ${instructorNames} (${onlineNote})\\n\r\n`;
+						icsData += `UID:${courseCode}-${sectionNumber}-online@jupiterp\r\n`;
+						icsData += 'END:VEVENT\r\n';
 					}
 					continue;
 				}
 
 				const actualFirstDay = getFirstOccurrence(semesterStart, packet.days);
 
-				icsData += 'BEGIN:VEVENT\n';
-				icsData += `SUMMARY:${courseCode} (${sectionNumber}) - ${packet.location}\n`;
+				icsData += 'BEGIN:VEVENT\r\n';
+				icsData += `SUMMARY:${courseCode} (${sectionNumber}) - ${packet.location}\r\n`;
 
-				icsData += `DTSTART:${actualFirstDay}T${packet.start}\n`;
-				icsData += `DTEND:${actualFirstDay}T${packet.end}\n`;
+				icsData += `DTSTART:${actualFirstDay}T${packet.start}\r\n`;
+				icsData += `DTEND:${actualFirstDay}T${packet.end}\r\n`;
 
-				icsData += `RRULE:FREQ=WEEKLY;BYDAY=${packet.days};UNTIL=${semesterEnd}T235959Z\n`;
+				icsData += `RRULE:FREQ=WEEKLY;BYDAY=${packet.days};UNTIL=${semesterEnd}T235959Z\r\n`;
 
-				icsData += `LOCATION:${packet.location}\n`;
+				icsData += `LOCATION:${packet.location}\r\n`;
 				const packetLocLower = (packet.location || '').toLowerCase();
 				const onlineTag = packetLocLower.includes('online')
 					? packetLocLower.includes('sync')
@@ -206,9 +205,9 @@
 							? ' (Online - Asynchronous)'
 							: ' (Online)'
 					: '';
-				icsData += `DESCRIPTION:Course: ${courseName}${onlineTag}\\nInstructors: ${instructorNames}\\n`;
-				icsData += `UID:${courseCode}-${sectionNumber}-${packet.start || ''}@jupiterp\n`;
-				icsData += 'END:VEVENT\n';
+				icsData += `DESCRIPTION:Course: ${courseName}${onlineTag}\\nInstructors: ${instructorNames}\\n\r\n`;
+				icsData += `UID:${courseCode}-${sectionNumber}-${packet.start || ''}@jupiterp\r\n`;
+				icsData += 'END:VEVENT\r\n';
 			}
 		}
 		icsData += 'END:VCALENDAR';
