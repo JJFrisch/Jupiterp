@@ -226,10 +226,10 @@
 
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
 	<div
-		class="flex w-96 flex-col gap-4 rounded-lg border-2 border-divBorderLight bg-bgLight p-6 shadow-lg dark:border-divBorderDark dark:bg-bgDark"
+		class="flex w-96 flex-col gap-4 rounded-lg border border-divBorderLight bg-bgLight p-6 shadow-lg dark:border-divBorderDark dark:bg-bgDark"
 	>
 		<div class="flex items-center justify-between">
-			<h2 class="text-xl font-bold">Export Schedule</h2>
+			<h2 class="text-base font-bold">Export Schedule</h2>
 
 			<Tooltip
 				text="?"
@@ -237,12 +237,12 @@
 			/>
 		</div>
 
-		<p class="mb-2 text-center text-sm">
+		<p class="mb-2 text-left text-sm">
 			Download your schedule as a .ics file and import it into your favorite app.
 		</p>
 
 		<button
-			class=" mt-2 w-full rounded-md bg-hoverLight px-4 py-3 text-lg font-medium transition dark:bg-hoverDark"
+			class="mt-2 w-full rounded-md bg-outlineLight px-4 py-3 font-medium transition hover:bg-hoverLight dark:bg-outlineDark dark:hover:bg-hoverDark"
 			on:click={exportCalender}
 		>
 			Export
