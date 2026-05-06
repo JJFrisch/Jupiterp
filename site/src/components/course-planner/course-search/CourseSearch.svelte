@@ -209,6 +209,8 @@ Copyright (C) 2026 Andrew Cupps
 		highlightedSuggestionIndex = -1;
 	}
 
+	// export let courseSearchSelected: boolean = false;
+
 	$: {
 		if (hoveredSection) {
 			let index = searchResults.findIndex((course) => {

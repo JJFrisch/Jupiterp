@@ -5,7 +5,12 @@ https://github.com/atcupps/Jupiterp/LICENSE).
 Copyright (C) 2026 Andrew Cupps
 -->
 <script lang="ts">
-	import { AngleRightOutline, PlusOutline, TrashBinOutline } from 'flowbite-svelte-icons';
+	import {
+		AngleRightOutline,
+		PlusOutline,
+		ForwardOutline,
+		TrashBinOutline
+	} from 'flowbite-svelte-icons';
 	import {
 		CurrentScheduleStore,
 		NonselectedScheduleStore
@@ -18,8 +23,10 @@ Copyright (C) 2026 Andrew Cupps
 		uniqueScheduleName
 	} from '$lib/course-planner/ScheduleSelector';
 	import type { ScheduleBlock, StoredSchedule } from '../../../types';
+	import PopupShare from '../../layout/PopupShare.svelte';
 
 	let dropdownOpen: boolean = false;
+	let sharePopUpOpen: boolean = false;
 
 	let currentScheduleName: string;
 	let currentScheduleSelections: ScheduleBlock[];
@@ -128,6 +135,15 @@ Copyright (C) 2026 Andrew Cupps
 		>
 			<PlusOutline class="h-5 w-5 px-0.5" />
 		</button>
+
+		<button
+			class="h-7 rounded-md
+                        hover:bg-hoverLight dark:hover:bg-hoverDark"
+			title="Export schedule"
+			on:click={() => (sharePopUpOpen = !sharePopUpOpen)}
+		>
+			<ForwardOutline class="h-5 w-5 px-0.5" />
+		</button>
 	</div>
 
 	{#if dropdownOpen}
@@ -155,5 +171,9 @@ Copyright (C) 2026 Andrew Cupps
 				</div>
 			{/each}
 		</div>
+	{/if}
+
+	{#if sharePopUpOpen}
+		<PopupShare on:close-export={() => (sharePopUpOpen = false)} />
 	{/if}
 </div>
